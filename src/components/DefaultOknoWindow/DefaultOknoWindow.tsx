@@ -14,6 +14,7 @@ interface DefaultOknoWindowProps {
   okno: Okno;
   children?: React.ReactNode;
 }
+
 export default function DefaultOknoWindow({
   okno,
   children,
