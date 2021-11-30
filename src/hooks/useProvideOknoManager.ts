@@ -17,8 +17,17 @@ export default function useProvideOknoManager() {
     setOknoMap({ ...oknoMap, [newWindow.id]: newWindow });
   }
 
+  function remove(id: string) {
+    if (id in oknoMap === false) return;
+
+    const newMap = { ...oknoMap };
+    delete newMap[id];
+    setOknoMap(newMap);
+  }
+
   return {
     getAll,
     add,
+    remove,
   };
 }

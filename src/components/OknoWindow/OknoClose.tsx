@@ -1,4 +1,6 @@
 import { useContext } from "react";
+
+import useOknoManager from "hooks/useOknoManager";
 import { oknoWindowContext } from "./OknoWindow";
 
 interface OknoCloseProps {
@@ -9,12 +11,13 @@ interface OknoCloseProps {
 
 export default function OknoClose({ as, children, ...rest }: OknoCloseProps) {
   const { okno } = useContext(oknoWindowContext);
-  const Component = as || "button";
+  const { remove } = useOknoManager();
 
   function handleClick() {
-    console.log(`Closing window ${okno.id}`);
+    remove(okno.id);
   }
 
+  const Component = as || "button";
   return (
     <Component className="okno-close" onClick={handleClick} {...rest}>
       {children}
