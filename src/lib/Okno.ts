@@ -11,10 +11,4 @@ export default class Okno {
     this.position = { x: 0, y: 0 };
     this.dimensions = { width: 600, height: 200 };
   }
-
-  public move(delta: Position): Okno {
-    this.position.x += delta.x;
-    this.position.y += delta.y;
-    return this;
-  }
 }
