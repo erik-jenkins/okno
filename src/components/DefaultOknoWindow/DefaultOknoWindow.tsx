@@ -26,6 +26,14 @@ const TitlebarStyles = css`
   & > * {
     margin-left: 2px;
   }
+
+  &:hover {
+    cursor: grab;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 const ContentStyles = css`
