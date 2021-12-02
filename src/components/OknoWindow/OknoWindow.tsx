@@ -1,9 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import React, { createContext, useState } from "react";
-import { DndContext, DragMoveEvent, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragMoveEvent,
+  DragEndEvent,
+  useSensor,
+} from "@dnd-kit/core";
 import { css } from "@emotion/react";
 
 import Okno from "lib/Okno";
+import { WindowMoveSensor } from "lib/sensors";
 import { Position } from "types";
 import useOknoManager from "hooks/useOknoManager";
 
@@ -35,6 +41,7 @@ export default function OknoWindow({
 }: OknoWindowProps) {
   const [tempPosition, setTempPosition] = useState<Position>(okno.position);
   const { setPosition } = useOknoManager();
+  const moveSensor = useSensor(WindowMoveSensor);
 
   function handleDragMove(event: DragMoveEvent) {
     setTempPosition({
@@ -49,7 +56,11 @@ export default function OknoWindow({
 
   const Component = as || "div";
   return (
-    <DndContext onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={[moveSensor]}
+      onDragMove={handleDragMove}
+      onDragEnd={handleDragEnd}
+    >
       <oknoWindowContext.Provider value={{ okno }}>
         <Component
           className="okno-window"
