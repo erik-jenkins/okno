@@ -25,19 +25,11 @@ export default function useProvideOknoManager() {
     setOknoMap(newMap);
   }
 
-  function move(id: string, x: number, y: number) {
+  function setPosition(id: string, x: number, y: number) {
     if (id in oknoMap === false) return;
 
     const okno = oknoMap[id];
-    const newOkno = okno.move(x, y);
-    setOknoMap({ ...oknoMap, [id]: newOkno });
-  }
-
-  function savePosition(id: string) {
-    if (id in oknoMap === false) return;
-
-    const okno = oknoMap[id];
-    const newOkno = okno.savePosition();
+    const newOkno = okno.setPosition(x, y);
     setOknoMap({ ...oknoMap, [id]: newOkno });
   }
 
@@ -45,7 +37,6 @@ export default function useProvideOknoManager() {
     getAll,
     add,
     remove,
-    move,
-    savePosition,
+    setPosition,
   };
 }
