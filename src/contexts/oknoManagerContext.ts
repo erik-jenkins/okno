@@ -7,6 +7,7 @@ interface OknoManagerContext {
   add: () => void;
   remove: (id: string) => void;
   setPosition: (id: string, x: number, y: number) => void;
+  setDimensions: (id: string, width: number, height: number) => void;
 }
 
 const oknoManagerContext = createContext({} as OknoManagerContext);

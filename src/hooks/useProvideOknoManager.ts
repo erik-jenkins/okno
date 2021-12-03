@@ -33,10 +33,19 @@ export default function useProvideOknoManager() {
     setOknoMap({ ...oknoMap, [id]: newOkno });
   }
 
+  function setDimensions(id: string, width: number, height: number) {
+    if (id in oknoMap === false) return;
+
+    const okno = oknoMap[id];
+    const newOkno = okno.setDimensions(width, height);
+    setOknoMap({ ...oknoMap, [id]: newOkno });
+  }
+
   return {
     getAll,
     add,
     remove,
     setPosition,
+    setDimensions,
   };
 }

@@ -17,4 +17,10 @@ export default class Okno {
     this.position.y = y;
     return this;
   }
+
+  public setDimensions(width: number, height: number): Okno {
+    this.dimensions.width = width;
+    this.dimensions.height = height;
+    return this;
+  }
 }

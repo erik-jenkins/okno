@@ -15,7 +15,7 @@ export default function OknoTitlebar({
 }: OknoTitlebarProps) {
   const { okno } = useContext(oknoWindowContext);
   const { attributes, listeners } = useDraggable({
-    id: okno.id,
+    id: `okno.move.${okno.id}`,
   });
 
   const Component = as || "div";

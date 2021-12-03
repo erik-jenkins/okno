@@ -10,11 +10,13 @@ import { css } from "@emotion/react";
 
 import Okno from "lib/Okno";
 import { WindowMoveSensor } from "lib/sensors";
-import { Position } from "types";
+import { Dimensions, Position } from "types";
+import { getEventDetails, OknoEventType } from "lib/oknoEventType";
 import useOknoManager from "hooks/useOknoManager";
 
 interface OknoWindowContext {
   okno: Okno;
+  tempDimensions: Dimensions;
 }
 
 export const oknoWindowContext = createContext({} as OknoWindowContext);
@@ -26,11 +28,10 @@ interface OknoWindowProps {
   [prop: string]: any;
 }
 
-const OknoWindowCss = (okno: Okno, position: Position) => css`
+const OknoWindowCss = (position: Position, dimensions: Dimensions) => css`
   position: absolute;
   transform: translate3d(${position.x}px, ${position.y}px, 0);
-  width: ${okno.dimensions.width}px;
-  height: ${okno.dimensions.height}px;
+  width: ${dimensions.width}px;
 `;
 
 export default function OknoWindow({
@@ -39,19 +40,53 @@ export default function OknoWindow({
   children,
   ...rest
 }: OknoWindowProps) {
-  const [tempPosition, setTempPosition] = useState<Position>(okno.position);
-  const { setPosition } = useOknoManager();
+  const { setPosition, setDimensions } = useOknoManager();
   const moveSensor = useSensor(WindowMoveSensor);
+  const [tempPosition, setTempPosition] = useState<Position>(okno.position);
+  const [tempDimensions, setTempDimensions] = useState<Dimensions>(
+    okno.dimensions
+  );
 
   function handleDragMove(event: DragMoveEvent) {
+    const { eventType, deltaX, deltaY } = getEventDetails(event);
+    if (eventType === OknoEventType.Move) {
+      handleWindowMove(deltaX, deltaY);
+      return;
+    }
+
+    handleWindowResize(deltaX, deltaY);
+  }
+
+  function handleWindowMove(deltaX: number, deltaY: number) {
     setTempPosition({
-      x: okno.position.x + event.delta.x,
-      y: okno.position.y + event.delta.y,
+      x: okno.position.x + deltaX,
+      y: okno.position.y + deltaY,
+    });
+  }
+
+  function handleWindowResize(deltaX: number, deltaY: number) {
+    setTempDimensions({
+      width: okno.dimensions.width + deltaX,
+      height: okno.dimensions.height + deltaY,
     });
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    const { eventType } = getEventDetails(event);
+    if (eventType === OknoEventType.Move) {
+      handleWindowMoveEnd();
+      return;
+    }
+
+    handleWindowResizeEnd();
+  }
+
+  function handleWindowMoveEnd() {
     setPosition(okno.id, tempPosition.x, tempPosition.y);
+  }
+
+  function handleWindowResizeEnd() {
+    setDimensions(okno.id, tempDimensions.width, tempDimensions.height);
   }
 
   const Component = as || "div";
@@ -61,10 +96,10 @@ export default function OknoWindow({
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
     >
-      <oknoWindowContext.Provider value={{ okno }}>
+      <oknoWindowContext.Provider value={{ okno, tempDimensions }}>
         <Component
           className="okno-window"
-          css={OknoWindowCss(okno, tempPosition)}
+          css={OknoWindowCss(tempPosition, tempDimensions)}
           {...rest}
         >
           {children}
